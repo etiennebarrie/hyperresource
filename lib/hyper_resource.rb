@@ -91,7 +91,7 @@ public
                           :namespace => self.namespace,
                           :href    => obj['_links']['self']['href'])
     rsrc.response_body = Response[obj]
-    rsrc.init_from_response_body!
+    rsrc.init_from_response_body
     rsrc
   end
 
@@ -106,7 +106,7 @@ public
 
   ## Populates +attributes+, +links+, and +objects+ from the contents of
   ## +response+. Sets +loaded = true+.
-  def init_from_response_body!
+  def init_from_response_body
     return unless self.response_body
     self.objects.   init_from_hal(self.response_body);
     self.links.     init_from_hal(self.response_body);
