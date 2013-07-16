@@ -2,39 +2,67 @@
 require 'sinatra'
 require 'json'
 
-get '/' do
-  errors = verify_headers
-  if errors
-    JSON.dump(errors)
-  else
-    headers['Content-type'] = 'application/vnd.example.v1+hal+json'
-    JSON.dump(
-      { name: "whatever API",
-        _links: {
-          self: {href:"/"},
-          widgets: {href:"/widgets"}
+class HyperResourceTestServer < Sinatra::Base
+
+#  set :run, true
+
+  get '/' do
+    errors = verify_headers
+    if errors
+      JSON.dump(errors)
+    else
+      headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Root'
+      JSON.dump(
+        { name: "whatever API",
+          _links: {
+            self: {href:"/"},
+            widgets: {href:"/widgets"}
+          }
         }
-      }
-    )
+      )
+    end
   end
-end
 
-get '/widgets' do
+  get '/widgets' do
+    errors = verify_headers
+    if errors
+      JSON.dump(errors)
+    else
+      headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=WidgetSet'
+      JSON.dump(
+        { name: "My Widgets",
+          _links: {
+            self: {href:"/widgets"},
+            root: {href:"/"}
+          },
+          _embedded: {
+            widgets: [
+              { name: "Widget 1",
+                _links: {
+                  self: {href: "/widgets/1"},
+                  widgets: {href: "/widgets"}
+                }
+              }
+            ]
+          }
+        }
+      )
+    end
+  end
 
-end
+  post '/widgets' do
 
-post '/widgets' do
+  end
 
-end
+  put '/widgets/:widget_id' do
 
-put '/widgets/:widget_id' do
+  end
 
-end
+  delete '/widgets/:widget_id' do
 
-delete '/widgets/:widget_id' do
+  end
 
-end
+  def verify_headers
+  end
 
-
-def verify_headers
 end
